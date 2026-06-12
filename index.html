@@ -483,20 +483,113 @@
     transform: translateY(0);
   }
 
-  /* RESPONSIVE */
+  /* HAMBURGER MENU */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    transition: all 0.3s;
+    transform-origin: center;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 61px; left: 0; right: 0;
+    background: rgba(10,10,10,0.98);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    z-index: 99;
+    padding: 24px;
+    flex-direction: column;
+    gap: 0;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .mobile-menu a:last-child { border-bottom: none; color: var(--accent); font-weight: 700; }
+  .mobile-menu a:hover { color: var(--text); }
+
+  /* TABLET */
   @media (max-width: 900px) {
     nav { padding: 16px 24px; }
     .nav-links { display: none; }
-    .hero { padding: 0 24px 64px; }
+    .hamburger { display: flex; }
+    .hero { padding: 100px 24px 64px; min-height: 100svh; }
     .hero-scroll { display: none; }
-    section { padding: 72px 24px; }
+    section { padding: 64px 24px; }
     .stats-bar { padding: 24px; flex-wrap: wrap; gap: 24px; }
     .stat-item { border-right: none; padding: 0; flex: 1 1 40%; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .project-card.featured { grid-column: 1; grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; gap: 2px; }
+    .project-card.featured { grid-column: 1; grid-template-columns: 1fr; gap: 32px; }
+    .project-card { padding: 32px; }
+    .project-mockup { display: none; }
     .skills-layout { grid-template-columns: 1fr; gap: 40px; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
     .about-layout { grid-template-columns: 1fr; gap: 40px; }
     footer { flex-direction: column; gap: 16px; text-align: center; }
+    .section-title { font-size: 36px; margin-bottom: 36px; }
+    .contact-big { font-size: 56px; }
+  }
+
+  /* MOBILE */
+  @media (max-width: 480px) {
+    nav { padding: 14px 20px; }
+    .hero { padding: 90px 20px 56px; }
+    .hero-name { font-size: 48px; line-height: 0.95; margin-bottom: 20px; }
+    .hero-eyebrow { font-size: 11px; margin-bottom: 16px; }
+    .hero-desc { font-size: 15px; margin-bottom: 32px; }
+    .hero-ctas { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .btn-primary { width: 100%; text-align: center; padding: 16px 24px; font-size: 13px; }
+    .btn-ghost { font-size: 14px; }
+
+    .stats-bar { padding: 20px; gap: 16px; }
+    .stat-item { flex: 1 1 100%; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .stat-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .stat-number { font-size: 32px; }
+
+    section { padding: 56px 20px; }
+    .section-eyebrow { font-size: 10px; }
+    .section-title { font-size: 30px; margin-bottom: 28px; }
+
+    .project-card { padding: 24px; }
+    .project-name { font-size: 22px; }
+    .project-desc { font-size: 13px; }
+    .project-arrow { top: 24px; right: 24px; width: 30px; height: 30px; font-size: 14px; }
+    .tech-badge { font-size: 10px; padding: 3px 8px; }
+
+    .skills-grid { grid-template-columns: 1fr; }
+    .skill-group { padding: 24px; }
+
+    .about-text p { font-size: 15px; }
+    .sidebar-block { padding: 20px; }
+
+    .contact-big { font-size: 40px; margin-bottom: 20px; }
+    .contact-desc { font-size: 15px; }
+    .contact-email { font-size: 15px; word-break: break-all; }
+
+    footer { padding: 24px 20px; }
+    .footer-links { gap: 16px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -515,7 +608,17 @@
     <li><a href="#about">About</a></li>
     <li><a href="#contact" class="nav-cta">Hire Me</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#work" class="menu-link">Work</a>
+  <a href="#skills" class="menu-link">Skills</a>
+  <a href="#about" class="menu-link">About</a>
+  <a href="#contact" class="menu-link">Hire Me →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -770,6 +873,20 @@
   }
   drawParticles();
 
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+
   // Fade-up on scroll
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -786,5 +903,3 @@
 </script>
 </body>
 </html>
-
-
