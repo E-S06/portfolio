@@ -2,7 +2,7 @@
 
 Personal portfolio website for Emmanuel Solademi, a freelance Web Designer & Developer specializing in high-conversion landing pages, brand experiences, and production-ready WordPress builds.
 
-🌐 **Live site:** [yourusername.github.io](https://yourusername.github.io)
+🌐 **Live site:**(https://e-s06.github.io/Emmanuel-Solademi/)
 
 ---
 
